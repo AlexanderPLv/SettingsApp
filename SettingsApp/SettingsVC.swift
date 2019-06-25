@@ -20,8 +20,37 @@ class SettingsVC: UITableViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        loadSettings()
+    }
+    
+    private func saveSettings() {
+        
+        let settingsDictionary: [String : Any?] = ["firstName": firstNameTextField.text,
+                                        "lastName": lastNameTextField.text,
+                                        "likesDev": likesDevelopmentSwitch.isOn,
+                                        "coolMeter": coolMeterLabel.text]
+        
+        UserDefaults.standard.set(settingsDictionary, forKey: "settings")
         
     }
+    
+    func loadSettings() {
+        
+        guard let settingsDictionary = UserDefaults.standard.dictionary(forKey: "settings"),
+                  let firstName = settingsDictionary["firstName"] as? String,
+        let lastName = settingsDictionary["lastName"] as? String,
+        let likesDev = settingsDictionary["likesDev"] as? Bool,
+        let coolMeter = settingsDictionary["coolMeter"] as? Int
+            else { return }
+        
+        firstNameTextField.text = firstName
+        lastNameTextField.text = lastName
+        likesDevelopmentSwitch.isOn = likesDev
+        coolMeterLabel.text = String(coolMeter)
+        coolMeterSlider.value = Float(coolMeter)
+        
+    }
+    
 
     @IBAction func didSlideCoolMeter(_ sender: UISlider) {
         
@@ -33,6 +62,7 @@ class SettingsVC: UITableViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard indexPath.section == 2 else { return }
         print("save")
+        saveSettings()
     }
     
 }
