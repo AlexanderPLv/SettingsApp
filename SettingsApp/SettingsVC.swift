@@ -28,7 +28,7 @@ class SettingsVC: UITableViewController {
         let settingsDictionary: [String : Any?] = ["firstName": firstNameTextField.text,
                                         "lastName": lastNameTextField.text,
                                         "likesDev": likesDevelopmentSwitch.isOn,
-                                        "coolMeter": coolMeterLabel.text]
+                                        "coolMeter": Int(coolMeterSlider.value)]
         
         UserDefaults.standard.set(settingsDictionary, forKey: "settings")
         
@@ -36,8 +36,9 @@ class SettingsVC: UITableViewController {
     
     func loadSettings() {
         
-        guard let settingsDictionary = UserDefaults.standard.dictionary(forKey: "settings"),
-                  let firstName = settingsDictionary["firstName"] as? String,
+        guard let settingsDictionary = UserDefaults.standard.dictionary(forKey: "settings") else { return }
+        
+        guard let firstName = settingsDictionary["firstName"] as? String,
         let lastName = settingsDictionary["lastName"] as? String,
         let likesDev = settingsDictionary["likesDev"] as? Bool,
         let coolMeter = settingsDictionary["coolMeter"] as? Int
@@ -61,8 +62,16 @@ class SettingsVC: UITableViewController {
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard indexPath.section == 2 else { return }
-        print("save")
         saveSettings()
+        didSaveAlert()
+    }
+    
+    func didSaveAlert() {
+        let alert = UIAlertController(title: "Settings saved", message: nil, preferredStyle: .alert)
+        let action = UIAlertAction(title: "Dismiss", style: .cancel)
+        alert.addAction(action)
+        
+        present(alert, animated: true)
     }
     
 }
